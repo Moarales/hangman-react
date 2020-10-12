@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import styled from '@emotion/styled'
 import { RoundButton } from './GameControllers'
 import { Text } from '../style/shared'
+import { render } from '@testing-library/react'
 
 interface IPosterProps {
   imgSrc: string
@@ -14,6 +15,7 @@ const HintContainer = styled.div<IPosterProps>`
   background-position: center right;
 `
 
+
 interface IHint {
   counter: number
   poster: string
@@ -21,23 +23,30 @@ interface IHint {
 }
 
 const PosterHint = ({ counter, poster, setCounter }: IHint) => {
-  const [isHinted, setIsHinted] = useState<boolean>(false)
+  const [hintCounter, setHintCounter] = useState<number>(0)
 
   const onHintClick = () => {
-    setCounter(counter - 2)
-    setIsHinted(true)
+    hintCounter === 0 ? setCounter(counter - 2) : setCounter(counter-1)
+    setHintCounter(hintCounter+1)
   }
+
+  const renderHints = () => {
+    const hintArray = []
+    for(let i = 0; i < hintCounter; i++){
+     hintArray.push(<HintContainer imgSrc={`http://image.tmdb.org/t/p/w154${poster}`} />)
+    }
+    return hintArray
+  }
+
 
   return (
     <>
-      {!isHinted && counter > 2 &&
+      {counter > 0 &&
         (<>
           <RoundButton onClick={onHintClick}>Hint</RoundButton>
-          <Text>This will cost you two guesses!</Text>
+          <Text>This will cost you {hintCounter <1 ? "two guesses" : "one guess" }!</Text>
         </>)}
-      {isHinted && counter > 0 &&
-        (<HintContainer imgSrc={`http://image.tmdb.org/t/p/w154${poster}`} />)
-      }
+      {renderHints()}
     </>
   )
 }

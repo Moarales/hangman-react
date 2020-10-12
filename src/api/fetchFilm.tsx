@@ -16,6 +16,8 @@ export const fetchFilm = async (genreId: number, setNewFilm: React.Dispatch<Reac
   while (!testFilm(result.results[filmPosition].title)) {
     filmPosition = getRandom(result.results.length)
   }
+
+  console.log(result)
   setNewFilm(result.results[filmPosition])
 }
 
